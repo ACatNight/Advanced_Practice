@@ -1,15 +1,60 @@
 package org.acatNight.StudnetCore;
 
-import org.acatNight.day1.text4;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Core {
     public static void main(String[] args) {
-        boolean running = true;
+        boolean running = false;
         Scanner sc = new Scanner(System.in);
         ArrayList<Student> list = new ArrayList<>();
+        boolean Start = true;
+
+        ArrayList<String> Usernames = new ArrayList<>();
+        ArrayList<String> Passwords = new ArrayList<>();
+
+        while (Start){
+            System.out.println("欢迎来到学生管理系统");
+            System.out.println("请选择操作1注册 2登录 3忘记密码");
+            int number = sc.nextInt();
+            switch (number){
+                case 1:
+                    RegisterUser(Usernames,Passwords);
+
+                    break;
+                case 2:
+                    if (Usernames.isEmpty() && Passwords.isEmpty()){
+                        System.out.println("当前未注册");
+                    }
+                    LoginUser(Usernames,Passwords);
+                    Start = false;
+                    running = true;
+                    System.out.println("登录成功");
+
+
+                    break;
+                case 3:
+                    if (Usernames.isEmpty() && Passwords.isEmpty()){
+                        System.out.println("当前未注册");
+                    }
+                    ForgotPassword(Usernames,Passwords);
+
+
+
+                    break;
+                case 4:
+                    Start = false;
+            }
+
+
+
+        }
+
+
+
+
+
 
         while (running) {
             System.out.println("\"-------------欢迎来到学生管理系统----------------\"\n" +
@@ -58,6 +103,7 @@ public class Core {
                     break;
 
                 case 6:
+
                     running = false;
                     break;
                 default:
@@ -69,6 +115,106 @@ public class Core {
 
         }
     }
+
+    public static void RegisterUser(ArrayList<String> Usernames, ArrayList<String> Passwords) {
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("请输入您的用户名：");
+            System.out.println("\t用户名长度必须在3~15位之间");
+            System.out.println("\t只能是字母加数字的组合，但不能是纯数字");
+
+            String name = sc.next();
+
+            // 检查用户名是否合法
+            if (!Usernames.contains(name)
+                    && name.length() >= 3 && name.length() <= 15
+                    && name.matches("[A-Za-z0-9]+")
+                    && !name.matches("\\d+")) {
+
+                System.out.println("用户名合法！");
+                Usernames.add(name);
+
+                while (true) {
+                    System.out.println("请输入密码：");
+                    String pwd1 = sc.next();
+
+                    System.out.println("请再次输入密码确认：");
+                    String pwd2 = sc.next();
+
+                    if (pwd1.equals(pwd2)) {
+                        Passwords.add(pwd1);
+                        System.out.println("注册成功！");
+                        return; //注册完成后退出整个方法
+                    } else {
+                        System.out.println("两次输入的密码不相同，请重新输入！");
+                    }
+                }
+
+            } else {
+                System.out.println("用户名不合法，请重新输入！");
+            }
+        }
+    }
+
+    public static void LoginUser(ArrayList<String> Usernames, ArrayList<String> Passwords){
+        System.out.println("欢迎来到登录界面");
+        Scanner sc = new Scanner(System.in);
+        boolean online = true;
+        while (online){
+            System.out.println("请输入你的用户账号");
+            String Temp = sc.next();
+            System.out.println("请输入你的密码");
+            String pass = sc.next();
+            if (Usernames.contains(Temp)){
+
+                for (int i = 0; i < Passwords.size() ; i++) {
+                    String TempPass  = Passwords.get(i);
+                    boolean correctPassword = TempPass.equals(pass);
+                    if (correctPassword){
+                        System.out.println("登录成功");
+                        online = false;
+                    }else {
+                        System.out.println("登录失败");
+                    }
+
+
+
+                }
+
+
+            }else {
+                System.out.println("用户不存在");
+            }
+
+        }
+
+
+    }
+
+    public static void ForgotPassword(ArrayList<String> Usernames,ArrayList<String> Passwords){
+        System.out.println("请输入您的账户，进行修改密码");
+        Scanner sc = new Scanner(System.in);
+        String TempUser = sc.next();
+        for (int i = 0; i < Usernames.size() ; i++) {
+            if (Usernames.contains(TempUser)){
+                System.out.println("用户正确");
+                System.out.println("请你修改密码");
+                String pass = sc.next();
+                Passwords.set(i,pass);
+                System.out.println("密码修改成功");
+                System.out.println("您当前的账号:" + Usernames.get(i));
+                System.out.println("您当前的密码:" + Passwords.get(i));
+
+
+
+            }else {
+                System.out.println("没有该用户");
+            }
+        }
+
+    }
+
 
     public static void AddStudent(ArrayList<Student> list) {
         System.out.println("请先设置学生人数");
